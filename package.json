@@ -1,0 +1,23 @@
+{
+  "name": "cards",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/no1ness/cards.git"
+  },
+  "author": "Ruslan Shportenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/no1ness/cards/issues"
+  },
+  "homepage": "https://github.com/no1ness/cards#readme",
+  "dependencies": {
+    "argparse": "^2.0.1",
+    "express": "^4.17.1"
+  }
+}
