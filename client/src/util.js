@@ -1,0 +1,1 @@
+export const fetchFromOrigin = (path) => fetch(`${window.location.origin}${path}`);

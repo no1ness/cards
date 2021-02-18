@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import { fetchFromOrigin } from "../util";
+
 export default {
   name: "Card",
 
@@ -32,7 +34,7 @@ export default {
 
   methods: {
     async fetchCard(id) {
-      const resp = await fetch(`http://localhost:8000/get/${id}`);
+      const resp = await fetchFromOrigin(`/get/${id}`);
       const card = await resp.json();
       return card;
     }

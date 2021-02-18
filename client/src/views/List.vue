@@ -1,85 +1,76 @@
 <template>
-<main>
+  <main>
     <h1>Cards List</h1>
+
     <nav>
-        <a class="left" @click="switchPage(-1)">&larr; Prev</a>
-        <a class="right" @click="switchPage(+1)">Next &rarr;</a>
+      <a class="left" @click="switchPage(-1)">&larr; Prev</a>
+      <a class="right" @click="switchPage(+1)">Next &rarr;</a>
     </nav>
 
     <router-link
-    class="thumbnail"
-    v-for="card in cards"
-    :key="card.id"
-    :to="'/card?id=' + card.id"
+      class="thumbnail"
+      v-for="card in cards"
+      :key="card.id"
+      :to="'/card?id=' + card.id"
     >
-        <img :src="card.avatar" />
-        <h4>{{ card.handle }}</h4>
+      <img :src="card.avatar" />
+      <h4>{{ card.handle }}</h4>
     </router-link>
-</main>
+  </main>
 </template>
 
 <script>
+import { fetchFromOrigin } from "../util";
+
 export default {
-    name: "List",
+  name: "List",
 
-    data() {
-        return {
-            pageID: 0,
-            cards: []
-        };
+  data() {
+    return {
+      pageID: 0,
+      cards: []
+    };
+  },
+
+  created() {
+    this.fetchCards();
+  },
+
+  methods: {
+    async fetchCards() {
+      this.updatePageID();
+      this.cards = await this.fetchCardsFromPage(this.pageID);
     },
-    
-    created() {
-       this.fetchCards();
+
+    updatePageID() {
+      const params = new URLSearchParams(window.location.search);
+      this.pageID = params.get("page") || 0;
     },
 
-    methods: {
-       async fetchCards() {
-           this.updatePageID();
-           this.cards = await this.fetchCardsFromPage(this.pageID);
-       },
+    async fetchCardsFromPage(pageID) {
+      const resp = await fetchFromOrigin(`/?page=${pageID}`);
+      const cards = await resp.json();
+      return cards;
+    },
 
-        updatePageID() {
-            const params = new URLSearchParams(window.location.search);
-            this.pageID = params.get("page") || 0;
-        },
-
-        async fetchCardsFromPage(pageID) {
-            const resp = await fetch(`http://localhost:8000/?page=${pageID}`);
-            const cards = await resp.json();
-            return cards;
-        },
-
-        async switchPage(offset) {
-            const newPageID = parseInt(this.pageID) + offset;
-            const newCards = await this.fetchCardsFromPage(newPageID);
-            if (newCards.length > 0) {
-                this.$router.push({ path: "list", query: {page: newPageID} });
-                this.updatePageID();
-                this.cards = newCards;
-            } else {
-                alert("This is the edge. There are no more cards.");
-            }
-        },
-        showCard(id) {
-            this.$router.push({ path: "card", query: {id: id} });
-        }
+    async switchPage(offset) {
+      const newPageID = parseInt(this.pageID) + offset;
+      const newCards = await this.fetchCardsFromPage(newPageID);
+      if (newCards.length > 0) {
+        this.$router.push({ path: "list", query: { page: newPageID } });
+        this.updatePageID();
+        this.cards = newCards;
+      } else {
+        alert("This is the edge. There are no more pages.");
+      }
     }
+  }
 };
 </script>
 
 <style scoped>
 main {
-    font-family: Arial Helvetica, sans-serif;
-}
-
-nav {
-    display: flex;
-    max-width: 150px;
-    margin: auto;
-    border-radius: 10px;
-    border: 1px solid #666;
-    overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 nav {
@@ -119,21 +110,19 @@ nav .right {
   cursor: pointer;
   text-decoration: none;
 }
-
-.thumbnail a:hover {
-    background-color: #4c637a;
+.thumbnail:hover {
+  background-color: #4c637a;
 }
 
 .thumbnail img {
-    border-radius: 50%;
-    background-color: white;
-    margin: 10px;
+  border-radius: 50%;
+  background-color: white;
+  margin: 10px;
 }
 
 .thumbnail h4 {
-    line-height: 70px;
-    margin: 0;
-    margin-left: 5px;
-
+  line-height: 70px;
+  margin: 0;
+  margin-left: 5px;
 }
 </style>

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prod": "set NODE_ENV=\"production\" && node index.js",
     "dev": "node index.js --port 8000"
   },
   "repository": {
